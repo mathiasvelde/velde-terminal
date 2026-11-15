@@ -657,7 +657,14 @@ button.brand:focus-visible{outline:2px solid var(--paper);outline-offset:3px}
    Config-en er ikkje hemmeleg. Han fortel berre sida kva Firebase-prosjekt ho høyrer til.
    Tom {} = inga innlogging, og alt blir lagra i nettlesaren som før. */
 /* ---- lim inn under denne lina ---- */
-const firebaseConfig = {};
+const firebaseConfig = {
+  apiKey: "AIzaSyAoBJM6Wa1uBIAPd3vCoB2Dvks4lo9HsiQ",
+  authDomain: "velde-terminal.firebaseapp.com",
+  projectId: "velde-terminal",
+  storageBucket: "velde-terminal.firebasestorage.app",
+  messagingSenderId: "730043832189",
+  appId: "1:730043832189:web:abd1ac9a8540790a389e14"
+};
 /* ---- lim inn over denne lina ---- */
 window.VT_FIREBASE = typeof firebaseConfig === 'object' && firebaseConfig ? firebaseConfig : {};
 if ((window.VT_FIREBASE.apiKey || window.VT_NEED_LOGIN) && !(window.claude && typeof window.claude.use === 'function')) document.documentElement.classList.add('vt-auth');
