@@ -3664,7 +3664,7 @@ async function eodOne(i, code){
   if (eodBudget().n >= EOD_LIMIT) return i.hist === 'real' ? '' : 'Dagsgrensa hos EODHD er brukt opp, prøv igjen i morgon';
   try {
     eodSpend();
-    const rows = await jget('https://eodhd.com/api/eod/' + encodeURIComponent(code) + '?api_token=' + encodeURIComponent(Feed.keys.eod) + '&fmt=json&from=' + isoDaysAgo(365));
+    const rows = await jget('https://velde-eod.mathiasvelde.workers.dev/api/eod/' + encodeURIComponent(code) + '?api_token=' + encodeURIComponent(Feed.keys.eod) + '&fmt=json&from=' + isoDaysAgo(365));
     if (!Array.isArray(rows) || rows.length < 2){ const e = new Error('tomt'); e.status = 404; throw e; }
     const slim = rows.map(x => ({date:x.date, open:x.open, high:x.high, low:x.low, close:x.close, adjusted_close:x.adjusted_close, volume:x.volume}));
     save(ck, JSON.stringify({t:Date.now(), last:slim[slim.length - 1].date, rows:slim}));
@@ -4312,7 +4312,7 @@ async function fhQuotes(){
       if (q && q.c > 0){ setQuote(BYSYM.get(sym), 'live', q.c, q.pc, {o:q.o, h:q.h, l:q.l}, q.t ? isoIn(q.t * 1000, NYTZ) : null); ok++; }
     } catch (e){ err = e; if (e.status === 401 || e.status === 403) break; }
   }
-  fset('fh', ok > 0, ok ? ok + ' av ' + Object.keys(SRC.fh).length + ' aksjar oppdaterte' : errTxt(err));
+  const nfh = Object.keys(SRC.fh).length; fset('fh', nfh ? ok > 0 : null, ok ? ok + ' av ' + nfh + ' aksjar oppdaterte' : nfh ? errTxt(err) : 'Ingen US-aksjar på lista');
 }
 function wsOpen(){
   if (!Feed.on || !Feed.keys.fh || Feed.ws) return;
@@ -4442,7 +4442,7 @@ async function eodRun(){
     if (eodBudget().n >= EOD_LIMIT){ wait++; continue; }
     try {
       eodSpend();
-      const rows = await jget('https://eodhd.com/api/eod/' + encodeURIComponent(code) + '?api_token=' + encodeURIComponent(Feed.keys.eod) + '&fmt=json&from=' + isoDaysAgo(365));
+      const rows = await jget('https://velde-eod.mathiasvelde.workers.dev/api/eod/' + encodeURIComponent(code) + '?api_token=' + encodeURIComponent(Feed.keys.eod) + '&fmt=json&from=' + isoDaysAgo(365));
       if (!Array.isArray(rows) || rows.length < 2){ const e = new Error('tomt'); e.status = 404; throw e; }
       const slim = rows.map(x => ({date:x.date, open:x.open, high:x.high, low:x.low, close:x.close, adjusted_close:x.adjusted_close, volume:x.volume}));
       save(ck, JSON.stringify({t:Date.now(), last:slim[slim.length - 1].date, rows:slim}));
